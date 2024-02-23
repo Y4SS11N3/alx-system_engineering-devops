@@ -13,7 +13,7 @@ case "$1" in
     stop)
         if [ -f $PID_FILE ]; then
             PID=$(cat $PID_FILE)
-            kill "$PID"
+            kill -s SIGSTOP "$PID"
             rm -f $PID_FILE
             echo "manage_my_process stopped"
         else
@@ -23,7 +23,7 @@ case "$1" in
     restart)
         if [ -f $PID_FILE ]; then
             PID=$(cat $PID_FILE)
-            kill "$PID"
+            kill -s SIGSTOP "$PID"
             rm -f $PID_FILE
             echo "Stopping manage_my_process..."
         fi
