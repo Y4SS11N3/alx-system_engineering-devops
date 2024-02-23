@@ -2,18 +2,11 @@
 # Creates /var/run/myscript.pid with its PID, handles SIGTERM and SIGINT signals, deletes the PID file, and exits gracefully on SIGQUIT or SIGTERM
 
 # Create PID file
-echo $$ > /var/run/myscript.pid
+echo $BASHPID > /var/run/myscript.pid
 
 # Define cleanup procedure
 cleanup() {
-    # Check the last signal received
-    case "$1" in
-        SIGTERM)
-            echo "I hate the kill command" >&2
-            ;;
-        SIGQUIT)
-            ;;
-    esac
+    echo "I hate the kill command" >&2
     rm -f /var/run/myscript.pid
     exit 0
 }
@@ -22,9 +15,7 @@ cleanup() {
 trap 'echo "Y U no love me?!" >&2' SIGINT
 
 # Define signal handling for SIGQUIT and SIGTERM
-# Pass the signal name to the cleanup function
-trap 'cleanup SIGTERM' SIGTERM
-trap 'cleanup SIGQUIT' SIGQUIT
+trap cleanup SIGQUIT SIGTERM
 
 # Main loop
 while true; do
