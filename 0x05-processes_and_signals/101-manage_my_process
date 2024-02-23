@@ -1,37 +1,34 @@
 #!/usr/bin/env bash
-# Manages the manage_my_process script
-
-PID_FILE="/var/run/my_process.pid"
-PROCESS_SCRIPT="./manage_my_process"
+# Script to manage manage_my_process
 
 case "$1" in
-    start)
-        $PROCESS_SCRIPT &
-        echo $! > $PID_FILE
+    "start")  # Start the process
+        ./manage_my_process &
+        echo $! > /var/run/my_process.pid
         echo 'manage_my_process started'
         ;;
-    stop)
-        if [ -f $PID_FILE ]; then
-            PID=$(cat $PID_FILE)
+    "stop")  # Stop the process
+        if [ -f /var/run/my_process.pid ]; then
+            PID=$(cat /var/run/my_process.pid)
             kill -s SIGSTOP "$PID"
-            rm -f $PID_FILE
+            rm -f /var/run/my_process.pid
             echo 'manage_my_process stopped'
         else
             echo 'manage_my_process is not running'
         fi
         ;;
-    restart)
-        if [ -f $PID_FILE ]; then
-            PID=$(cat $PID_FILE)
+    "restart")  # Restart the process
+        if [ -f /var/run/my_process.pid ]; then
+            PID=$(cat /var/run/my_process.pid)
             kill -s SIGSTOP "$PID"
-            rm -f $PID_FILE
+            rm -f /var/run/my_process.pid
             echo 'manage_my_process stopped'
         fi
-        $PROCESS_SCRIPT &
-        echo $! > $PID_FILE
+        ./manage_my_process &
+        echo $! > /var/run/my_process.pid
         echo 'manage_my_process started'
         ;;
-    *)
+    *)  # Handle invalid arguments
         echo 'Usage: manage_my_process {start|stop|restart}'
         ;;
 esac
