@@ -1,31 +1,34 @@
 #!/usr/bin/env bash
 # Script to manage manage_my_process
 
+PID_FILE="/var/run/my_process.pid"
+PROCESS_SCRIPT="./manage_my_process"
+
 case "$1" in
-    "start")  # Start the process
-        ./manage_my_process &
-        echo $! > /var/run/my_process.pid
+    start)  # Start the process
+        $PROCESS_SCRIPT &
+        echo $! > $PID_FILE
         echo 'manage_my_process started'
         ;;
-    "stop")  # Stop the process
-        if [ -f /var/run/my_process.pid ]; then
-            PID=$(cat /var/run/my_process.pid)
-            kill -s SIGSTOP "$PID"
-            rm -f /var/run/my_process.pid
+    stop)  # Stop the process
+        if [ -f $PID_FILE ]; then
+            PID=$(cat $PID_FILE)
+            kill -s SIGTERM "$PID"
+            rm -f $PID_FILE
             echo 'manage_my_process stopped'
         else
             echo 'manage_my_process is not running'
         fi
         ;;
-    "restart")  # Restart the process
-        if [ -f /var/run/my_process.pid ]; then
-            PID=$(cat /var/run/my_process.pid)
-            kill -s SIGSTOP "$PID"
-            rm -f /var/run/my_process.pid
+    restart)  # Restart the process
+        if [ -f $PID_FILE ]; then
+            PID=$(cat $PID_FILE)
+            kill -s SIGTERM "$PID"
+            rm -f $PID_FILE
             echo 'manage_my_process stopped'
         fi
-        ./manage_my_process &
-        echo $! > /var/run/my_process.pid
+        $PROCESS_SCRIPT &
+        echo $! > $PID_FILE
         echo 'manage_my_process started'
         ;;
     *)  # Handle invalid arguments
