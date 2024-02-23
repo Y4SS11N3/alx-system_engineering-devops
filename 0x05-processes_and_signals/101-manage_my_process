@@ -8,16 +8,16 @@ case "$1" in
     start)
         $PROCESS_SCRIPT &
         echo $! > $PID_FILE
-        echo "manage_my_process started"
+        echo 'manage_my_process started'
         ;;
     stop)
         if [ -f $PID_FILE ]; then
             PID=$(cat $PID_FILE)
             kill -s SIGSTOP "$PID"
             rm -f $PID_FILE
-            echo "manage_my_process stopped"
+            echo 'manage_my_process stopped'
         else
-            echo "manage_my_process is not running"
+            echo 'manage_my_process is not running'
         fi
         ;;
     restart)
@@ -25,13 +25,13 @@ case "$1" in
             PID=$(cat $PID_FILE)
             kill -s SIGSTOP "$PID"
             rm -f $PID_FILE
-            echo "Stopping manage_my_process..."
+            echo 'manage_my_process stopped'
         fi
         $PROCESS_SCRIPT &
         echo $! > $PID_FILE
-        echo "manage_my_process restarted"
+        echo 'manage_my_process started'
         ;;
     *)
-        echo "Usage: $0 {start|stop|restart}"
+        echo 'Usage: manage_my_process {start|stop|restart}'
         ;;
 esac
