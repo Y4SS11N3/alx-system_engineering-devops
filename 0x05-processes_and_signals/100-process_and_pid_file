@@ -6,7 +6,14 @@ echo $$ > /var/run/myscript.pid
 
 # Define cleanup procedure
 cleanup() {
-    echo "I hate the kill command" >&2
+    # Check the last signal received
+    case "$1" in
+        SIGTERM)
+            echo "I hate the kill command" >&2
+            ;;
+        SIGQUIT)
+            ;;
+    esac
     rm -f /var/run/myscript.pid
     exit 0
 }
@@ -15,7 +22,9 @@ cleanup() {
 trap 'echo "Y U no love me?!" >&2' SIGINT
 
 # Define signal handling for SIGQUIT and SIGTERM
-trap cleanup SIGQUIT SIGTERM
+# Pass the signal name to the cleanup function
+trap 'cleanup SIGTERM' SIGTERM
+trap 'cleanup SIGQUIT' SIGQUIT
 
 # Main loop
 while true; do
