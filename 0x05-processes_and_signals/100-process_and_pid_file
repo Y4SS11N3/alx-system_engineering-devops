@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Creates /var/run/myscript.pid with its PID, handles SIGTERM and SIGINT signals, deletes the PID file, and exits gracefully on SIGQUIT or SIGTERM
+
+# Create PID file
+echo $$ > /var/run/myscript.pid
+
+# Define cleanup procedure
+cleanup() {
+    echo "I hate the kill command" >&2
+    rm -f /var/run/myscript.pid
+    exit 0
+}
+
+# Define signal handling for SIGINT
+trap 'echo "Y U no love me?!" >&2' SIGINT
+
+# Define signal handling for SIGQUIT and SIGTERM
+trap cleanup SIGQUIT SIGTERM
+
+# Main loop
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
+done
