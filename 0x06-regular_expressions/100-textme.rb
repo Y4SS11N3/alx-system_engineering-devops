@@ -17,10 +17,6 @@ if match_data
   receiver = match_data[2]
   flags = match_data[3]
 
-  # Ensure '+' signs are not removed in output
-  sender.gsub!(/^\+/, '')
-  receiver.gsub!(/^\+/, '')
-
   # Print the formatted output
   puts "#{sender},#{receiver},#{flags}"
 else
