@@ -1,29 +1,12 @@
 #!/usr/bin/env bash
-# Bash script to install and configure Nginx on Ubuntu 16.04
+# This script installs and configures Nginx to serve a 'Hello World!' page on port 80.
 
-# Update apt cache
-sudo apt update
-
-# Install Nginx
-sudo apt install nginx -y
-
-# Allow incoming traffic on port 22 (SSH)
-sudo ufw allow 22
-
-# Allow incoming traffic on port 80 (HTTP)
-sudo ufw allow 80 
-
-# Enable the firewall and use --force to avoid prompts
-sudo ufw --force enable
-
-# Check the status of the firewall
-sudo ufw status
-
-# Check the status of the Nginx service 
-systemctl status nginx
-
-# Create custom index.html that will be served by Nginx
-echo 'Hello World!' | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
-
-# Restart Nginx to load the new index.html
+sudo apt-get update -y
+sudo apt-get install nginx -y
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+sudo sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+sudo sed -i 's/listen \[::\]:80 default_server;/listen [::]:80;/' /etc/nginx/sites-available/default
+sudo sed -i 's/root \/var\/www\/html;/root \/var\/www\/html;/' /etc/nginx/sites-available/default
+sudo sed -i 's/index nginx-debian.html;/index index.html;/' /etc/nginx/sites-available/default
 sudo service nginx restart
+sudo update-rc.d nginx defaults
