@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# This script sets up an Apache server to serve a page containing 'Hello Holberton'
+
+# Install Apache if it's not already installed
+apt-get update -y
+apt-get install -y apache2
+
+# Create a simple HTML file with 'Hello Holberton' content
+echo "Hello Holberton" > /var/www/html/index.html
+
+# Ensure Apache is enabled and running
+service apache2 enable
+service apache2 start
+
+# Make sure the script is listening on all interfaces
+sed -i 's/Listen 80/Listen 0.0.0.0:80/' /etc/apache2/ports.conf
+
+# Restart Apache to apply the changes
+service apache2 restart
