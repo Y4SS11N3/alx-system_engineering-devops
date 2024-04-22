@@ -1,36 +1,37 @@
 #!/usr/bin/env bash
-# This script installs Nginx and configures a custom 404 page.
+# Bash script to install and configure Nginx on Ubuntu 16.04 with a redirect, custom page, and custom 404
 
-# Update package lists and install Nginx
-sudo apt-get update -y
-sudo apt-get install nginx -y
+# Update apt cache
+apt-get update
 
-# Create the custom 404 page
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html > /dev/null
+# Install Nginx
+apt-get install -y nginx
 
-# Create a configuration file for Nginx
-sudo tee /etc/nginx/sites-available/custom_404 > /dev/null <<EOF
-server {
+# Create the directory for the custom web pages
+mkdir -p /etc/nginx/html
+
+# Create the custom "Hello World!" page
+echo "Hello World!" > /etc/nginx/html/index.html
+
+# Create the custom 404 error page
+echo "Ceci n'est pas une page" > /etc/nginx/html/404.html
+
+# Configure Nginx with the redirect and custom 404 error page
+printf %s "server {
     listen 80;
-    server_name _;
+    listen [::]:80 default_server;
+    root   /etc/nginx/html;
+    index  index.html index.htm;
 
-    location / {
-        try_files \$uri \$uri/ =404;
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
 
-    error_page 404 /custom_404.html;
-    location = /custom_404.html {
-        root /var/www/html;
+    error_page 404 /404.html;
+    location = /404.html {
         internal;
     }
-}
-EOF
+}" > /etc/nginx/sites-available/default
 
-# Enable the configuration by linking it to the sites-enabled directory
-sudo ln -sf /etc/nginx/sites-available/custom_404 /etc/nginx/sites-enabled/
-
-# Remove the default site to avoid conflicts
-sudo rm -f /etc/nginx/sites-enabled/default
-
-# Restart Nginx to apply changes
-sudo service nginx restart
+# Start Nginx
+service nginx start

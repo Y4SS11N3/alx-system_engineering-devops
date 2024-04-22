@@ -1,27 +1,49 @@
 #!/usr/bin/env bash
-# This script installs Nginx and configures a redirection from /redirect_me to a YouTube video.
+# Bash script to install and configure Nginx on Ubuntu 16.04 with a redirect and custom page
 
-# Update package lists and install Nginx
-sudo apt-get update -y
-sudo apt-get install nginx -y
+# Update apt cache
+sudo apt update
 
-# Create a configuration file for redirection
-sudo tee /etc/nginx/sites-available/redirection > /dev/null <<EOF
+# Install Nginx
+sudo apt install nginx -y
+
+# Allow incoming traffic on port 22 (SSH)
+sudo ufw allow 22
+
+# Allow incoming traffic on port 80 (HTTP)
+sudo ufw allow 80
+
+# Enable the firewall and use --force to avoid prompts
+sudo ufw --force enable
+
+# Check the status of the firewall
+sudo ufw status
+
+# Check the status of the Nginx service
+systemctl status nginx
+
+# Create the directory for the custom web page
+sudo mkdir -p /etc/nginx/html
+
+# Create the custom "Hello World!" page
+echo "Hello World!" | sudo tee /etc/nginx/html/index.html > /dev/null
+
+# Configure the redirect
+sudo tee /etc/nginx/sites-available/default > /dev/null <<EOT
 server {
-    listen 80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /etc/nginx/html;
+    index index.html;
+
     server_name _;
 
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
 }
-EOF
+EOT
 
-# Enable the configuration by linking it to the sites-enabled directory
-sudo ln -sf /etc/nginx/sites-available/redirection /etc/nginx/sites-enabled/
-
-# Remove the default site to avoid conflicts
-sudo rm -f /etc/nginx/sites-enabled/default
-
-# Restart Nginx to apply changes
+# Restart Nginx to load the new configuration
 sudo service nginx restart
