@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# This script installs Nginx and configures a redirection from /redirect_me to a YouTube video.
+
+# Update package lists and install Nginx
+sudo apt-get update -y
+sudo apt-get install nginx -y
+
+# Create a configuration file for redirection
+sudo tee /etc/nginx/sites-available/redirection > /dev/null <<EOF
+server {
+    listen 80;
+    server_name _;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+EOF
+
+# Enable the configuration by linking it to the sites-enabled directory
+sudo ln -sf /etc/nginx/sites-available/redirection /etc/nginx/sites-enabled/
+
+# Remove the default site to avoid conflicts
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Restart Nginx to apply changes
+sudo service nginx restart
