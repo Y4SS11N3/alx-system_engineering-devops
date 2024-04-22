@@ -23,11 +23,11 @@ sudo ufw status
 systemctl status nginx
 
 # Create the directory for the custom web page
-sudo mkdir -p /etc/nginx/html
+sudo mkdir -p /var/www/html
 
 # Create the custom "Hello World!" page
-sudo touch /etc/nginx/html/index.html
-echo "Hello World!" | sudo tee /etc/nginx/html/index.html > /dev/null
+sudo touch /var/www/html/index.html
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
 
 # Configure the redirect
 sudo tee /etc/nginx/sites-available/default > /dev/null <<EOT
@@ -35,7 +35,7 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
-    root /etc/nginx/html;
+    root /var/www/html;
     index index.html;
 
     server_name _;

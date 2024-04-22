@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Bash script to install and configure Nginx on Ubuntu 16.04 with a redirect, custom page, and custom 404
+
+# Update apt cache
+apt-get update
+
+# Install Nginx
+apt-get install -y nginx
+
+# Create the directory for the custom web pages
+mkdir -p /var/www/html
+
+# Create the custom "Hello World!" page
+touch /var/www/html/index.html
+echo "Hello World!" > /var/www/html/index.html
+
+# Create the custom 404 error page
+touch /var/www/html/404.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Configure Nginx with the redirect and custom 404 error page
+printf %s "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    server_name _;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+}" > /etc/nginx/sites-available/default
+
+# Restart Nginx to load the new configuration
+service nginx restart
