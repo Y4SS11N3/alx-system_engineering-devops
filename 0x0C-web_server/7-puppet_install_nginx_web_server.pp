@@ -1,4 +1,4 @@
-# This manifest installs and configures Nginx with a custom page and a 301 redirect
+# This manifest installs and configures Nginx with a custom page and a 301 redirect.
 
 class nginx_setup {
   package { 'nginx':
