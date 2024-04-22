@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This script installs and configures Nginx to serve a 'Hello World!' page on port 80.
+# install and configure Nginx to serve a 'Hello World!'
 
 apt-get -y install nginx
 ufw allow 'Nginx HTTP'
