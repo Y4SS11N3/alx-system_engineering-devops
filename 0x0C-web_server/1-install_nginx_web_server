@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# This script installs and configures Nginx to serve a 'Hello World!' page on port 80.
+
+# Update package lists
+apt-get update -y
+
+# Install Nginx
+apt-get install nginx -y
+
+# Create and write the required HTML file
+echo "Hello World!" > /var/www/html/index.html
+
+# Configure Nginx to listen on port 80
+sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+sed -i 's/listen \[::\]:80 default_server;/listen [::]:80;/' /etc/nginx/sites-available/default
+sed -i 's/root \/var\/www\/html;/root \/var\/www\/html;/' /etc/nginx/sites-available/default
+sed -i 's/index nginx-debian.html;/index index.html;/' /etc/nginx/sites-available/default
+
+# Restart Nginx without using systemctl
+service nginx restart
+
+# Ensure Nginx starts on boot
+update-rc.d nginx defaults
