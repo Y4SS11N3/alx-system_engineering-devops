@@ -1,39 +1,41 @@
-# This manifest installs and configures Nginx with a custom page and a 301 redirect.
+# Install and Configure Nginx
 
-class nginx_setup {
-  package { 'nginx':
-    ensure => installed,
-  }
-
-  service { 'nginx':
-    ensure    => running,
-    enable    => true,
-    require   => Package['nginx'],
-  }
-
-  file { '/var/www/html/index.html':
-    ensure  => file,
-    content => 'Hello World!',
-    require => Package['nginx'],
-  }
-
-  file { '/etc/nginx/sites-available/default':
-    ensure  => file,
-    content => template('nginx/default.erb'),
-    require => Package['nginx'],
-    notify  => Service['nginx'],
-  }
+# Install Nginx package
+package { 'nginx':
+  ensure => installed,
 }
 
-class nginx_redirect {
-  file_line { 'nginx_redirect':
-    path  => '/etc/nginx/sites-available/default',
-    line  => 'rewrite ^/redirect_me$ http://example.com permanent;',
-    match => '^.*rewrite.*redirect_me.*$',
-    require => Package['nginx'],
-    notify => Service['nginx'],
-  }
+# Ensure Nginx service is running
+service { 'nginx':
+  ensure    => running,
+  enable    => true,
+  require   => Package['nginx'],
+  subscribe => File['/etc/nginx/sites-available/default'],
 }
 
-include nginx_setup
-include nginx_redirect
+# Configure Nginx default site
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => "server {
+    listen 80 default_server;
+    root /var/www/html;
+    index index.html;
+
+    location / {
+      try_files \$uri \$uri/ =404;
+    }
+
+    location /redirect_me {
+      return 301 https://highendflora.com/;
+    }
+  }
+",
+  notify  => Service['nginx'],
+}
+
+# Create index.html with "Hello World!"
+file { '/var/www/html/index.html':
+  ensure  => file,
+  content => "Hello World!\n",
+  require => Package['nginx'],
+}
