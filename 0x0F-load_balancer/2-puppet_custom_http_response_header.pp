@@ -1,6 +1,12 @@
-# This Puppet script installs Nginx, configures a custom HTTP response header, and creates a simple index.html file.
+# This Puppet script installs Nginx, configures a custom HTTP response header, creates a simple index.html file, and sets up a redirect.
+exec { 'update':
+  command => '/usr/bin/apt-get update',
+}
+
+# Install Nginx
 package { 'nginx':
-  ensure => installed,
+  ensure  => installed,
+  require => Exec['update'],
 }
 
 # Create custom HTTP header configuration
@@ -24,6 +30,8 @@ file { '/etc/nginx/sites-available/default':
       server_name _;
 
       include /etc/nginx/conf.d/custom_header.conf;
+
+      rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
     }
   ",
   notify  => Service['nginx'],
@@ -39,7 +47,6 @@ service { 'nginx':
 # Create index.html file
 file { '/var/www/html/index.html':
   ensure  => file,
-  content => 'Hello World!',
+  content => 'Y4SS11N3',
   require => Package['nginx'],
 }
-
