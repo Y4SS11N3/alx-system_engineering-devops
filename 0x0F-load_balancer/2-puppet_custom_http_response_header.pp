@@ -1,6 +1,4 @@
-# 2-puppet_custom_http_response_header.pp
-
-# Install Nginx
+# This Puppet script installs Nginx, configures a custom HTTP response header, and creates a simple index.html file.
 package { 'nginx':
   ensure => installed,
 }
@@ -44,3 +42,4 @@ file { '/var/www/html/index.html':
   content => 'Hello World!',
   require => Package['nginx'],
 }
+
