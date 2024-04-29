@@ -1,52 +1,34 @@
 # This Puppet script installs Nginx, configures a custom HTTP response header, creates a simple index.html file, and sets up a redirect.
-exec { 'update':
+# Update system packages
+exec { 'update system':
   command => '/usr/bin/apt-get update',
 }
 
 # Install Nginx
 package { 'nginx':
-  ensure  => installed,
-  require => Exec['update'],
+  ensure  => 'installed',
+  require => Exec['update system'],
 }
 
-# Create custom HTTP header configuration
-file { '/etc/nginx/conf.d/custom_header.conf':
-  ensure  => file,
-  content => 'add_header X-Served-By $hostname;',
-  notify  => Service['nginx'],
+# Create a simple index.html file
+file {'/var/www/html/index.html':
+  content => 'Hello World!',
 }
 
-# Configure Nginx
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  content => "
-    server {
-      listen 80 default_server;
-      listen [::]:80 default_server;
+# Redirect setup
+exec {'redirect_me':
+  command   => 'sed -i "24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default',
+  provider  => 'shell',
+}
 
-      root /var/www/html;
-      index index.html;
-
-      server_name _;
-
-      include /etc/nginx/conf.d/custom_header.conf;
-
-      rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
-    }
-  ",
-  notify  => Service['nginx'],
+# Add custom HTTP header
+exec {'HTTP header':
+  command   => 'sed -i "25i\	add_header X-Served-By \$hostname;" /etc/nginx/sites-available/default',
+  provider  => 'shell',
 }
 
 # Ensure Nginx service is running
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => Package['nginx'],
-}
-
-# Create index.html file
-file { '/var/www/html/index.html':
-  ensure  => file,
-  content => 'Y4SS11N3',
+service {'nginx':
+  ensure  => 'running',
   require => Package['nginx'],
 }
