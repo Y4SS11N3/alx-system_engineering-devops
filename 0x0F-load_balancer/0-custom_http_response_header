@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Configure 531091-web-02 to be identical to 531091-web-01 and add custom HTTP response header
+
+# Update apt cache
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Configure custom HTTP response header
+sudo tee /etc/nginx/conf.d/custom_header.conf > /dev/null <<EOT
+add_header X-Served-By \$hostname;
+EOT
+
+# Create the directory for the custom web page
+sudo mkdir -p /var/www/html
+
+# Create the custom "Hello World!" page
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Configure Nginx to serve the custom page
+sudo tee /etc/nginx/sites-available/default > /dev/null <<EOT
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    server_name _;
+
+    include /etc/nginx/conf.d/custom_header.conf;
+}
+EOT
+
+# Restart Nginx to load the new configuration
+sudo service nginx restart
