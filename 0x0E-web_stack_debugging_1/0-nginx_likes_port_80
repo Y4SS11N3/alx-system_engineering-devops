@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script configures Nginx to listen on port 80 for all active IPv4 addresses
+
+sudo nginx -t
+sudo systemctl reload nginx
