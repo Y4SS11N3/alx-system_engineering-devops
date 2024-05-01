@@ -1,38 +1,5 @@
 #!/usr/bin/env bash
 # Configures a server to make Nginx listen on port 80
 
-# Install Nginx if it's not already installed
-if ! which nginx > /dev/null 2>&1; then
-    apt-get update
-    apt-get install -y nginx
-fi
-
-# Remove default Nginx configuration that may conflict with listening on port 80
-rm -f /etc/nginx/sites-enabled/default
-
-# Create a new default configuration file
-cat > /etc/nginx/sites-available/default << 'EOF'
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
-
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-EOF
-
-# Ensure the configuration is enabled
-ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# Restart Nginx to apply the changes
-service nginx restart
-
-# Ensure the script is executable and that Nginx is running and listening
-chmod +x 0-nginx_likes_port_80
-netstat -tulpn | grep :80
+sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo service nginx restart
