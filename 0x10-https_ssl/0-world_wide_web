@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# This script displays DNS record information for specified subdomains.
+
+function query_dns() {
+    local domain=$1
+    local subdomain=$2
+    local record
+
+    record=$(dig +short $subdomain.$domain)
+    if [[ -z "$record" ]]; then
+        echo "The subdomain $subdomain does not have a DNS record."
+    else
+        echo "The subdomain $subdomain is a A record and points to $record"
+    fi
+}
+
+if [[ $# -eq 1 ]]; then
+    domain=$1
+    # Display information for default subdomains
+    for sub in www lb-01 web-01 web-02; do
+        query_dns $domain $sub
+    done
+elif [[ $# -eq 2 ]]; then
+    domain=$1
+    subdomain=$2
+    # Display information for a specific subdomain
+    query_dns $domain $subdomain
+else
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
