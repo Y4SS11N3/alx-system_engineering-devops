@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 # This script ensures the default Nginx site is enabled and restarts Nginx
 
-sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && sudo systemctl restart nginx
+sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo systemctl restart nginx
