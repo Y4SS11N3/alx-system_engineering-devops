@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Change the listening port from 8080 to 80 in the Nginx default site configuration
-
-sudo sed -i "s/8080/80/" /etc/nginx/sites-enabled/default
-sudo service nginx restart
-echo "" | sudo dd status=none of=/run/nginx.pid
+# 1-debugging_made_short
+sudo apt-get -y install nginx
+sudo service nginx start
+kill -9 "$(cat /run/nginx.pid)"
