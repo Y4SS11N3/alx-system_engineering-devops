@@ -2,7 +2,5 @@
 # Change the listening port from 8080 to 80 in the Nginx default site configuration
 
 sudo sed -i "s/8080/80/" /etc/nginx/sites-enabled/default
-# Restart the Nginx service to apply the changes
 sudo service nginx restart
-# Clear the Nginx PID file to ensure it reflects the current running process
 echo "" | sudo dd status=none of=/run/nginx.pid
