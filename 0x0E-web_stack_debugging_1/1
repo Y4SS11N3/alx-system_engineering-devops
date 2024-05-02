@@ -1,3 +1,1 @@
- * Restarting nginx nginx
-   ...fail!
-./1-debugging_made_short: line 5: kill: (3532) - No such process
+nginx: [alert] kill(3532, 1) failed (3: No such process)
