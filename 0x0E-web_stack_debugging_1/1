@@ -1,3 +1,0 @@
-sudo: rsync: command not found
- * Restarting nginx nginx
-   ...fail!
