@@ -1,0 +1,14 @@
+Pull request link:
+https://github.com/alex/what-happens-when/pull/2128
+
+Description:
+This pull request significantly expands the HTTP/2 protocol section to provide a deeper technical dive into the protocol's multiplexing, streams, frames, flow control, and prioritization mechanisms. The goal is to comprehensively explain how HTTP/2 is implemented "under the hood" to achieve its performance benefits over HTTP/1.1.
+
+The new content covers:
+
+- The binary framing layer that breaks messages into independent frames that can be interleaved and prioritized
+- How HTTP/2 streams are established, managed, and closed over a single TCP connection
+- The format and types of frames (DATA, HEADERS, PRIORITY, RST_STREAM, SETTINGS, PUSH_PROMISE, PING, GOAWAY, WINDOW_UPDATE, CONTINUATION) 
+- How flow control is implemented using the WINDOW_UPDATE frame to manage the amount of outstanding data
+- How stream prioritization works via the PRIORITY frame and dependency weighting to optimize the delivery of high-priority responses
+- How HPACK header compression eliminates redundant header fields, limits vulnerability to known security attacks, and easily evolves to new compression algorithms
