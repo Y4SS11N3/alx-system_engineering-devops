@@ -8,4 +8,3 @@ archive_name="${date}.tar.gz"
 
 mysqldump --all-databases --user=root --password="$password" > "$backup_file"
 tar -czvf "$archive_name" "$backup_file"
-rm "$backup_file"
