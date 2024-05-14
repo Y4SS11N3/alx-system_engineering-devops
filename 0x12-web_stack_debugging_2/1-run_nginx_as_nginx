@@ -1,40 +1,8 @@
 #!/usr/bin/env bash
-# This script configures the container to run Nginx as the nginx user and listen on port 8080
+# Fix Nginx configuration to run as nginx user and listen on port 8080
 
-# Check if Nginx is installed
-if ! command -v nginx > /dev/null 2>&1; then
-    # Install Nginx
-    apt-get update
-    apt-get install -y nginx
-fi
-
-# Stop Nginx if it's running
-if pgrep -x "nginx" > /dev/null; then
-    service nginx stop
-fi
-
-# Update the Nginx configuration to listen on port 8080
-if [ -f /etc/nginx/sites-available/default ]; then
-    sed -i 's/80 default_server/8080 default_server/' /etc/nginx/sites-available/default
-else
-    echo "Nginx default configuration file not found."
-fi
-
-# Change the user and group in the Nginx configuration
-if [ -f /etc/nginx/nginx.conf ]; then
-    sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
-else
-    echo "Nginx main configuration file not found."
-fi
-
-# Create an nginx user if it doesn't exist
-if ! id -u nginx > /dev/null 2>&1; then
-    useradd -r nginx
-fi
-
-# Start Nginx as the nginx user
-if command -v nginx > /dev/null 2>&1; then
-    sudo -u nginx service nginx start
-else
-    echo "Nginx service not found."
-fi
+killall apache2
+chown -R nginx:nginx /etc/nginx
+chmod -R 777 /etc/nginx
+sed -i 's/listen \([0-9]\+\) default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
+su nginx -c "service nginx start"
