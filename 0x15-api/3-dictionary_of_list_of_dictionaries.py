@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-Script that exports data for all employees in JSON format using the provided REST API.
+Script that exports data for all employees in JSON format using the provided
+REST API.
 """
 
 import json
