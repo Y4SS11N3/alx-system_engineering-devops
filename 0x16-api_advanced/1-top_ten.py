@@ -2,7 +2,7 @@
 """
 A module that contains the function top_ten
 """
-import requests
+from requests import get
 
 
 def top_ten(subreddit):
@@ -14,9 +14,10 @@ def top_ten(subreddit):
         print(None)
         return
 
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {"User-Agent": "MyBot/0.0.1"}
-    response = requests.get(url, headers=headers, allow_redirects=False)
+    params = {"limit": 10}
+    response = get(url, headers=headers, params=params, allow_redirects=False)
 
     if response.status_code == 200:
         data = response.json()
