@@ -11,40 +11,40 @@ server {
     }
 
     location /redirect_me {
-        return 301 https://th3-gr00t.tk;
+        rewrite ^ https://th3-gr00t.tk/ permanent;
     }
 
-    error_page 404 /404.html;
-    location /404 {
-        root /var/www/html;
+    error_page 404 /error_404.html;
+    location = /error_404.html {
         internal;
     }
 
-    location /airbnb-onepage/ {
-        proxy_pass http://localhost:5000;
+    location /airbnb-onepage {
+        proxy_pass http://0.0.0.0:5000/airbnb-onepage;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    location /airbnb-dynamic/number_odd_or_even/ {
-        proxy_pass http://localhost:5001/number_odd_or_even/;
+    location ~ ^/airbnb-dynamic/number_odd_or_even/([0-9]+)$ {
+        proxy_pass http://0.0.0.0:5001/number_odd_or_even/$1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
     location /api/ {
-        proxy_pass http://localhost:5002/api/;
+        proxy_pass http://0.0.0.0:5002;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
     location / {
-        proxy_pass http://localhost:5003;
+        proxy_pass http://0.0.0.0:5003;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
     location /static/ {
-        alias /path/to/AirBnB_clone_v4/web_dynamic/static/;
+        alias /home/ubuntu/AirBnB_clone_v4/web_dynamic/static/;
+        try_files $uri $uri/ =404;
     }
 }
