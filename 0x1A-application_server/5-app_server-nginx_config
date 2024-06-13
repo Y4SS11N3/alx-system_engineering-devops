@@ -32,13 +32,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://0.0.0.0:5002;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    location / {
-        proxy_pass http://0.0.0.0:5003;
+        proxy_pass http://0.0.0.0:5002/api/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
