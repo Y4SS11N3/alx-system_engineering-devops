@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-
 # Get the process ID (PID) of the Gunicorn master process
 GUNICORN_MASTER_PID=$(pgrep -f "gunicorn --bind 0.0.0.0:5003")
-
-# Send the SIGHUP signal to the Gunicorn master process to trigger a graceful reload
 kill -s SIGHUP $GUNICORN_MASTER_PID
